@@ -1,0 +1,42 @@
+{
+  "name": "@optimarvin/opti-cmp-client",
+  "version": "1.0.0",
+  "description": "Framework-agnostic client library for Optimizely CMP preview webhook handling and API integration",
+  "author": "Marvin Oey <marvin.oey@optimizely.com>",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format cjs,esm --dts",
+    "dev": "tsup src/index.ts --format cjs,esm --dts --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "optimizely",
+    "cmp",
+    "content-marketing-platform",
+    "preview",
+    "webhook",
+    "oauth"
+  ],
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/marvoey/opti-cmp-client.git"
+  }
+}
