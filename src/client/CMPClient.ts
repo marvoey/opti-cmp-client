@@ -1,4 +1,4 @@
-import type { CMPClientConfig, KeyedPreviews } from '../types/index.js';
+import type { CMPClientConfig, KeyedPreviews, CMPImage } from '../types/index.js';
 import { CMPError } from '../types/index.js';
 import { CMPOAuthClient } from '../oauth/CMPOAuthClient.js';
 
@@ -56,7 +56,7 @@ export class CMPClient {
     acknowledgedBy: string,
     contentHash: string
   ): Promise<void> {
-    const acknowledgeUrl = `${this.config.apiBaseUrl}/v3/structured-content/contents/${contentId}/versions/${versionId}/previews/${previewId}/acknowledge`;
+    const acknowledgeUrl = `${this.config.apiBaseUrl}/structured-content/contents/${contentId}/versions/${versionId}/previews/${previewId}/acknowledge`;
 
     const accessToken = await this.oauthClient.getAccessToken();
 
@@ -99,7 +99,7 @@ export class CMPClient {
     previewId: string,
     keyedPreviews: KeyedPreviews
   ): Promise<void> {
-    const completionUrl = `${this.config.apiBaseUrl}/v3/structured-content/contents/${contentId}/versions/${versionId}/previews/${previewId}/complete`;
+    const completionUrl = `${this.config.apiBaseUrl}/structured-content/contents/${contentId}/versions/${versionId}/previews/${previewId}/complete`;
 
     const accessToken = await this.oauthClient.getAccessToken();
 
@@ -122,5 +122,38 @@ export class CMPClient {
         errorText
       );
     }
+  }
+
+  /**
+   * Get Image by ID
+   *
+   * Retrieves image metadata and URL from CMP by image ID.
+   *
+   * @param id - The image ID (e.g., from graph://cmp/ImageMedia/{id})
+   * @returns The image data from CMP
+   */
+  async getImage(id: string): Promise<CMPImage> {
+    const imageUrl = `${this.config.apiBaseUrl}/images/${id}`;
+
+    const accessToken = await this.oauthClient.getAccessToken();
+
+    const response = await fetch(imageUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new CMPError(
+        `Failed to get image with ID: ${id}`,
+        response.status,
+        errorText
+      );
+    }
+
+    return await response.json() as CMPImage;
   }
 }
